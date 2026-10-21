@@ -58,7 +58,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
           children: [
             Icon(Icons.bolt_rounded, color: AppColors.primaryCyan),
             SizedBox(width: 8),
-            Text('Free Voice Agent', style: TextStyle(color: Colors.white, fontSize: 18)),
+            Text('Zoid AI', style: TextStyle(color: Colors.white, fontSize: 18)),
           ],
         ),
         content: Column(
@@ -202,12 +202,12 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'VOICE AGENT',
+                                              'ZOID',
                                               style: TextStyle(
                                                 color: AppColors.textPrimary,
-                                                fontSize: 16,
+                                                fontSize: 18,
                                                 fontWeight: FontWeight.bold,
-                                                letterSpacing: 1.5,
+                                                letterSpacing: 2.0,
                                               ),
                                             ),
                                             Text(

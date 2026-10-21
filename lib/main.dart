@@ -32,7 +32,7 @@ class VoiceAgentApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AI Voice Agent',
+      title: 'Zoid',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const VoiceAgentScreen(),

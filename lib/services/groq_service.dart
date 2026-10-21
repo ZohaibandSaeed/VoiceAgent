@@ -23,7 +23,7 @@ class GroqService {
   bool get hasApiKey => _apiKey.isNotEmpty && _apiKey != 'your_groq_api_key_here';
 
   static const String _systemPrompt = '''
-You are a warm, witty, and intelligent AI voice companion.
+You are Zoid, a warm, witty, and intelligent AI voice companion.
 Rules for voice responses:
 1. Keep answers concise, natural, and direct (1 to 3 sentences maximum), because your response will be read aloud by Text-to-Speech.
 2. Match the exact language of the user:

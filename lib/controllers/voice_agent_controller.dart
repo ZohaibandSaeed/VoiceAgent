@@ -125,9 +125,9 @@ class VoiceAgentController extends ChangeNotifier {
 
   /// Test sample voice with currently selected settings
   Future<void> testVoiceSettings() async {
-    String sample = "Hello! I am your AI voice agent. How can I help you today?";
+    String sample = "Hello! I am Zoid, your AI voice assistant. How can I help you today?";
     if (_ttsService.userLocale.startsWith('ur')) {
-      sample = "ہیلو! میں آپ کا آواز والا اے آئی ساتھی ہوں۔";
+      sample = "ہیلو! میں زوئڈ ہوں، آپ کا آواز والا اے آئی ساتھی۔";
     }
     await _ttsService.testVoice(sample);
   }

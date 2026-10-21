@@ -1,0 +1,48 @@
+name: Build Android Release APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Flutter APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Create .env from Secret
+        run: |
+          if [ -n "${{ secrets.GROQ_API_KEY }}" ]; then
+            echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
+          else
+            echo "GROQ_API_KEY=your_groq_api_key_here" > .env
+          fi
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zoid-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14
