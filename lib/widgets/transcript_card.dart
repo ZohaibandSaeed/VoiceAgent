@@ -24,24 +24,24 @@ class TranscriptCard extends StatelessWidget {
     final aiText = controller.currentResponse;
 
     String header = 'Conversation';
-    String displayText = 'Tap the glowing orb or mic button below and start speaking in English or Urdu.';
-    Color accentColor = AppColors.primaryCyan;
+    String displayText = 'Tap the acoustic core or button below to speak in English, Urdu, or Roman Urdu.';
+    Color accentColor = AppColors.lightBrown;
     bool isUrduText = false;
 
     if (status == AgentStatus.listening) {
-      header = 'You (Listening...)';
+      header = 'Listening...';
       displayText = userText.isNotEmpty ? userText : 'Listening to your voice...';
-      accentColor = AppColors.primaryCyan;
+      accentColor = AppColors.pureWhite;
       isUrduText = _isUrdu(userText);
     } else if (status == AgentStatus.thinking) {
-      header = 'You Said';
-      displayText = userText.isNotEmpty ? userText : 'Processing...';
-      accentColor = AppColors.accentViolet;
+      header = 'Processing';
+      displayText = userText.isNotEmpty ? userText : 'Generating response...';
+      accentColor = AppColors.lightBrown;
       isUrduText = _isUrdu(userText);
     } else if (status == AgentStatus.speaking) {
-      header = 'AI Response';
+      header = 'Zoid Speaking';
       displayText = aiText.isNotEmpty ? aiText : 'Speaking...';
-      accentColor = AppColors.activeGreen;
+      accentColor = AppColors.warmBrown;
       isUrduText = _isUrdu(aiText);
     } else if (status == AgentStatus.error && controller.errorMessage != null) {
       header = 'Notice';
@@ -50,24 +50,31 @@ class TranscriptCard extends StatelessWidget {
     } else if (aiText.isNotEmpty) {
       header = 'Last Response';
       displayText = aiText;
-      accentColor = AppColors.textSecondary;
+      accentColor = AppColors.lightBrown;
       isUrduText = _isUrdu(aiText);
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           decoration: BoxDecoration(
-            color: AppColors.surfaceCard.withValues(alpha: 0.55),
+            color: AppColors.surfaceCard.withValues(alpha: 0.65),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: accentColor.withValues(alpha: 0.25),
+              color: accentColor.withValues(alpha: 0.35),
               width: 1.2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                spreadRadius: 2,
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

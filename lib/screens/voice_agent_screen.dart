@@ -48,79 +48,6 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
     );
   }
 
-  void _showInfoDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.bolt_rounded, color: AppColors.primaryCyan),
-            SizedBox(width: 8),
-            Text('Zoid AI', style: TextStyle(color: Colors.white, fontSize: 18)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Features & Setup:',
-              style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 8),
-            _buildFeatureBullet(r'100% Free architecture ($0 cost)'),
-            _buildFeatureBullet('Native device Speech-To-Text & TTS'),
-            _buildFeatureBullet('Groq GPT-OSS-120B ultra-fast inference'),
-            _buildFeatureBullet('Urdu, English, Roman Urdu auto-detection'),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceCard,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.accentViolet.withValues(alpha: 0.3)),
-              ),
-              child: Text(
-                _controller.hasApiKey
-                    ? 'API Key Status: Active in .env'
-                    : 'API Key missing: Add GROQ_API_KEY inside your .env file',
-                style: TextStyle(
-                  color: _controller.hasApiKey ? AppColors.activeGreen : AppColors.warningOrange,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close', style: TextStyle(color: AppColors.primaryCyan)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureBullet(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('• ', style: TextStyle(color: AppColors.primaryCyan)),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,28 +60,40 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
 
           return Stack(
             children: [
-              // Ambient Decorative Glow Blobs in Background
+              // Ambient Decorative Glow Blobs in Background (Warm Light Brown & White luxury lighting)
               Positioned(
-                top: -60,
+                top: -80,
                 left: -60,
-                child: Container(
-                  width: 220,
-                  height: 220,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryCyan.withValues(alpha: 0.08),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 80,
-                right: -60,
                 child: Container(
                   width: 260,
                   height: 260,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.accentViolet.withValues(alpha: 0.08),
+                    color: AppColors.warmBrown.withValues(alpha: 0.08),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 140,
+                right: -70,
+                child: Container(
+                  width: 240,
+                  height: 240,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.lightBrown.withValues(alpha: 0.05),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 40,
+                left: -50,
+                child: Container(
+                  width: 280,
+                  height: 280,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.pureWhite.withValues(alpha: 0.03),
                   ),
                 ),
               ),
@@ -184,49 +123,43 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.surfaceCard,
-                                              borderRadius: BorderRadius.circular(12),
-                                              border: Border.all(
-                                                color: AppColors.primaryCyan.withValues(alpha: 0.3),
-                                              ),
-                                            ),
-                                            child: const Icon(
-                                              Icons.graphic_eq_rounded,
-                                              color: AppColors.primaryCyan,
-                                              size: 20,
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(9),
+                                            child: Image.asset(
+                                              'assets/images/logo.png',
+                                              width: 36,
+                                              height: 36,
+                                              fit: BoxFit.contain,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Container(
+                                                  width: 36,
+                                                  height: 36,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.surfaceCard,
+                                                    borderRadius: BorderRadius.circular(9),
+                                                    border: Border.all(
+                                                      color: AppColors.lightBrown.withValues(alpha: 0.35),
+                                                    ),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.graphic_eq_rounded,
+                                                    color: AppColors.pureWhite,
+                                                    size: 20,
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                           const SizedBox(width: 10),
-                                          const Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'ZOID',
-                                                  style: TextStyle(
-                                                    color: AppColors.textPrimary,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    letterSpacing: 2.0,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                ),
-                                                Text(
-                                                  'Groq GPT-OSS-120B',
-                                                  style: TextStyle(
-                                                    color: AppColors.textMuted,
-                                                    fontSize: 11,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                ),
-                                              ],
+                                          const Text(
+                                            'ZOID',
+                                            style: TextStyle(
+                                              color: AppColors.pureWhite,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 2.5,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),
@@ -242,24 +175,12 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                           tooltip: 'Voice & Accent Settings',
                                           icon: const Icon(
                                             Icons.tune_rounded,
-                                            color: AppColors.primaryCyan,
+                                            color: AppColors.lightBrown,
                                             size: 22,
                                           ),
                                           onPressed: _openVoiceSettings,
                                         ),
-                                        const SizedBox(width: 4),
-                                        IconButton(
-                                          visualDensity: VisualDensity.compact,
-                                          padding: const EdgeInsets.all(6),
-                                          constraints: const BoxConstraints(),
-                                          tooltip: 'Info',
-                                          icon: const Icon(
-                                            Icons.info_outline_rounded,
-                                            color: AppColors.textSecondary,
-                                            size: 22,
-                                          ),
-                                          onPressed: _showInfoDialog,
-                                        ),
+
                                         const SizedBox(width: 4),
                                         IconButton(
                                           visualDensity: VisualDensity.compact,
@@ -290,15 +211,15 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                         color: AppColors.warningOrange.withValues(alpha: 0.4),
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.warning_amber_rounded,
                                           color: AppColors.warningOrange,
                                           size: 20,
                                         ),
-                                        const SizedBox(width: 10),
-                                        const Expanded(
+                                        SizedBox(width: 10),
+                                        Expanded(
                                           child: Text(
                                             'Add your GROQ_API_KEY in the .env file to enable responses.',
                                             style: TextStyle(
@@ -319,7 +240,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
 
                                 const SizedBox(height: 18),
 
-                                // Central Glowing AI Orb
+                                // Central Luxury Acoustic Core
                                 GlowOrb(
                                   status: status,
                                   soundLevel: _controller.soundLevel,
@@ -336,6 +257,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
 
                                 const Spacer(flex: 1),
 
+
                                 // Live Glassmorphic Transcript Card
                                 TranscriptCard(
                                   controller: _controller,
@@ -344,7 +266,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
 
                                 const SizedBox(height: 20),
 
-                                // Bottom Main Action Button
+                                // Bottom Luxury Action Trigger Button
                                 _buildBottomActionButton(status),
 
                                 const SizedBox(height: 16),
@@ -364,26 +286,31 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
     );
   }
 
+
   Widget _buildBottomActionButton(AgentStatus status) {
     final isListening = status == AgentStatus.listening;
     final isSpeaking = status == AgentStatus.speaking;
 
-    Color buttonColor;
+    Color ringColor;
+    Color iconColor;
     IconData buttonIcon;
     String buttonLabel;
 
     if (isListening) {
-      buttonColor = AppColors.errorRed;
+      ringColor = AppColors.errorRed;
+      iconColor = AppColors.pureWhite;
       buttonIcon = Icons.stop_rounded;
-      buttonLabel = 'Tap to Send';
+      buttonLabel = 'TAP TO SEND';
     } else if (isSpeaking) {
-      buttonColor = AppColors.warningOrange;
+      ringColor = AppColors.warmBrown;
+      iconColor = AppColors.pureWhite;
       buttonIcon = Icons.volume_off_rounded;
-      buttonLabel = 'Stop AI Voice';
+      buttonLabel = 'STOP AI VOICE';
     } else {
-      buttonColor = AppColors.primaryCyan;
+      ringColor = AppColors.lightBrown;
+      iconColor = AppColors.pureWhite;
       buttonIcon = Icons.mic_rounded;
-      buttonLabel = 'Tap to Talk';
+      buttonLabel = 'TAP TO SPEAK';
     }
 
     return Column(
@@ -392,39 +319,52 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
         GestureDetector(
           onTap: () => _controller.toggleListening(),
           child: Container(
-            width: 72,
-            height: 72,
+            width: 76,
+            height: 76,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: RadialGradient(
+              gradient: const RadialGradient(
                 colors: [
-                  buttonColor,
-                  buttonColor.withValues(alpha: 0.7),
+                  Color(0xFF282C34),
+                  Color(0xFF16181D),
+                  Color(0xFF0C0E11),
                 ],
+                center: Alignment(-0.25, -0.32),
+              ),
+              border: Border.all(
+                color: ringColor.withValues(alpha: 0.65),
+                width: 2.0,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: buttonColor.withValues(alpha: 0.45),
-                  blurRadius: 20,
+                  color: ringColor.withValues(alpha: 0.35),
+                  blurRadius: 22,
+                  spreadRadius: 2,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  blurRadius: 12,
                   spreadRadius: 3,
                 ),
               ],
             ),
-            child: Icon(
-              buttonIcon,
-              color: Colors.white,
-              size: 34,
+            child: Center(
+              child: Icon(
+                buttonIcon,
+                color: iconColor,
+                size: 32,
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Text(
           buttonLabel,
           style: TextStyle(
-            color: buttonColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            color: ringColor,
+            fontSize: 11.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
           ),
         ),
       ],

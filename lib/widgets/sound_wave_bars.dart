@@ -40,56 +40,68 @@ class _SoundWaveBarsState extends State<SoundWaveBars> with SingleTickerProvider
   Widget build(BuildContext context) {
     final isActive = widget.status == AgentStatus.listening || widget.status == AgentStatus.speaking;
 
-    Color barColor;
+    Color startColor;
+    Color endColor;
     if (widget.status == AgentStatus.listening) {
-      barColor = AppColors.primaryCyan;
+      startColor = AppColors.pureWhite;
+      endColor = AppColors.lightBrown;
     } else if (widget.status == AgentStatus.speaking) {
-      barColor = AppColors.activeGreen;
+      startColor = AppColors.lightBrown;
+      endColor = AppColors.warmBrown;
     } else if (widget.status == AgentStatus.thinking) {
-      barColor = AppColors.accentViolet;
+      startColor = AppColors.warmBrown;
+      endColor = AppColors.deepBronze;
     } else {
-      barColor = AppColors.textMuted.withValues(alpha: 0.3);
+      startColor = AppColors.lightBrown.withValues(alpha: 0.35);
+      endColor = AppColors.warmBrown.withValues(alpha: 0.2);
     }
 
     return AnimatedBuilder(
       animation: _animController,
       builder: (context, child) {
         return SizedBox(
-          height: 48,
+          height: 44,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: List.generate(_barCount, (index) {
-              // Wave height algorithm combining sine wave + soundLevel decibels
+              // Mirrored bell curve factor so center bars are taller
+              final centerOffset = (index - (_barCount - 1) / 2.0).abs() / ((_barCount - 1) / 2.0);
+              final bellCurve = 1.0 - (centerOffset * 0.45);
+
               final phase = (index / _barCount) * 2 * math.pi;
               final wave = math.sin((_animController.value * 2 * math.pi) + phase);
 
               double height;
               if (isActive) {
-                // Sound reactive height
-                final base = 12.0;
-                final dynamicFactor = (wave.abs() * 18) + (widget.soundLevel * 28);
-                height = (base + dynamicFactor).clamp(6.0, 46.0);
+                final base = 10.0;
+                final dynamicFactor = ((wave.abs() * 16) + (widget.soundLevel * 26)) * bellCurve;
+                height = (base + dynamicFactor).clamp(6.0, 42.0);
               } else if (widget.status == AgentStatus.thinking) {
-                // Subtle thinking ripple
-                height = 8.0 + (wave.abs() * 14.0);
+                height = (8.0 + (wave.abs() * 14.0)) * bellCurve;
               } else {
-                // Resting idle line
-                height = 5.0;
+                height = 5.0 * bellCurve;
               }
 
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 70),
                 margin: const EdgeInsets.symmetric(horizontal: 2.2),
-                width: 3.5,
+                width: 3.2,
                 height: height,
                 decoration: BoxDecoration(
-                  color: barColor.withValues(alpha: isActive ? 0.9 : 0.4),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      startColor.withValues(alpha: isActive ? 0.95 : 0.45),
+                      endColor.withValues(alpha: isActive ? 0.85 : 0.3),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: isActive
                       ? [
                           BoxShadow(
-                            color: barColor.withValues(alpha: 0.5),
+                            color: startColor.withValues(alpha: 0.4),
                             blurRadius: 6,
                             spreadRadius: 1,
                           ),

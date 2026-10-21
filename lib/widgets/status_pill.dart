@@ -12,46 +12,46 @@ class StatusPill extends StatelessWidget {
       case AgentStatus.listening:
         return 'Listening to you...';
       case AgentStatus.thinking:
-        return 'Thinking...';
+        return 'Zoid is thinking...';
       case AgentStatus.speaking:
-        return 'AI Speaking...';
+        return 'AI is speaking...';
       case AgentStatus.error:
         return 'Issue Encountered';
       case AgentStatus.idle:
-        return 'Tap to Speak';
+        return 'Zoid is ready • Tap to speak';
     }
   }
 
   Color get _color {
     switch (status) {
       case AgentStatus.listening:
-        return AppColors.primaryCyan;
+        return AppColors.pureWhite;
       case AgentStatus.thinking:
-        return AppColors.accentViolet;
+        return AppColors.lightBrown;
       case AgentStatus.speaking:
-        return AppColors.activeGreen;
+        return AppColors.warmBrown;
       case AgentStatus.error:
         return AppColors.errorRed;
       case AgentStatus.idle:
-        return AppColors.textSecondary;
+        return AppColors.lightBrown;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard.withValues(alpha: 0.7),
+        color: AppColors.surfaceCard.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: _color.withValues(alpha: 0.4),
+          color: _color.withValues(alpha: 0.35),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: _color.withValues(alpha: 0.15),
-            blurRadius: 12,
+            color: _color.withValues(alpha: 0.12),
+            blurRadius: 14,
             spreadRadius: 1,
           ),
         ],
@@ -67,8 +67,8 @@ class StatusPill extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: _color,
-                  blurRadius: 6,
+                  color: _color.withValues(alpha: 0.7),
+                  blurRadius: 8,
                   spreadRadius: 2,
                 ),
               ],
@@ -79,9 +79,9 @@ class StatusPill extends StatelessWidget {
             _label,
             style: TextStyle(
               color: _color,
-              fontSize: 13,
+              fontSize: 12.5,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
+              letterSpacing: 0.4,
             ),
           ),
         ],

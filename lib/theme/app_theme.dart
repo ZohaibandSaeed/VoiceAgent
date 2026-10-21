@@ -1,45 +1,57 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Deep space dark backgrounds
-  static const Color background = Color(0xFF0A0E17);
-  static const Color surface = Color(0xFF131B2E);
-  static const Color surfaceCard = Color(0xFF1B243B);
+  // Deep luxury obsidian & onyx black backgrounds
+  static const Color background = Color(0xFF090A0C);
+  static const Color surface = Color(0xFF121417);
+  static const Color surfaceCard = Color(0xFF1A1D22);
+  static const Color surfaceCardLight = Color(0xFF24282F);
 
-  // Futuristic vibrant accents
-  static const Color primaryCyan = Color(0xFF00E5FF);
-  static const Color accentViolet = Color(0xFF8B5CF6);
-  static const Color glowBlue = Color(0xFF3B82F6);
-  static const Color activeGreen = Color(0xFF10B981);
-  static const Color warningOrange = Color(0xFFF59E0B);
-  static const Color errorRed = Color(0xFFEF4444);
+  // Luxury Light Brown / Warm Champagne / Caramel Bronze
+  static const Color primaryCyan = Color(0xFFD4B996); // Warm champagne light brown (primary)
+  static const Color warmBrown = Color(0xFFC5A880);
+  static const Color lightBrown = Color(0xFFE5D5C3);
+  static const Color deepBronze = Color(0xFFA8845B);
+  static const Color glowBrown = Color(0xFFF0E2D0);
 
-  // Text colors
+  // Pure & Pearl White highlights
+  static const Color pureWhite = Color(0xFFFFFFFF);
+  static const Color pearlWhite = Color(0xFFF5F5F7);
+  static const Color offWhite = Color(0xFFE5E7EB);
+
+  // Functional status colors (harmonized with warm luxury tone)
+  static const Color accentViolet = Color(0xFFC5A880); // maps to warm brown
+  static const Color glowBlue = Color(0xFFE5D5C3);
+  static const Color activeGreen = Color(0xFFE2C9A5); // warm champagne for active
+  static const Color warningOrange = Color(0xFFE5A96A);
+  static const Color errorRed = Color(0xFFE56A6A);
+
+  // High contrast text colors
   static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFF94A3B8);
-  static const Color textMuted = Color(0xFF64748B);
+  static const Color textSecondary = Color(0xFFC0C4CC);
+  static const Color textMuted = Color(0xFF7E8490);
 
-  // Gradient presets
+  // Luxury gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primaryCyan, accentViolet],
+    colors: [lightBrown, deepBronze],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient listeningGradient = LinearGradient(
-    colors: [Color(0xFF00E5FF), Color(0xFF0072FF)],
+    colors: [pureWhite, warmBrown],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const LinearGradient thinkingGradient = LinearGradient(
-    colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
+    colors: [warmBrown, deepBronze],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const LinearGradient speakingGradient = LinearGradient(
-    colors: [Color(0xFF10B981), Color(0xFF00E5FF)],
+    colors: [lightBrown, pureWhite],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
@@ -54,7 +66,7 @@ class AppTheme {
       fontFamily: 'sans-serif',
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primaryCyan,
-        secondary: AppColors.accentViolet,
+        secondary: AppColors.lightBrown,
         surface: AppColors.surface,
       ),
       appBarTheme: const AppBarTheme(
@@ -65,3 +77,4 @@ class AppTheme {
     );
   }
 }
+

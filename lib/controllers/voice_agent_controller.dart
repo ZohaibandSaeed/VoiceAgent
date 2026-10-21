@@ -150,6 +150,16 @@ class VoiceAgentController extends ChangeNotifier {
     }
   }
 
+  /// Send prompt directly (e.g. from quick suggestion chips)
+  Future<void> sendPrompt(String text) async {
+    if (_isProcessing || text.trim().isEmpty) return;
+    if (_ttsService.isSpeaking) {
+      await _ttsService.stop();
+    }
+    _currentTranscript = text.trim();
+    await _processRecordedSpeech();
+  }
+
   /// Start listening to user speech
   Future<void> startListening() async {
     if (_isProcessing) return;

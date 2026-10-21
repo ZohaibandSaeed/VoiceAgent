@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../controllers/voice_agent_controller.dart';
 import '../theme/app_theme.dart';
 
@@ -23,7 +24,6 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
     {'code': 'en-IN', 'name': 'Indian / Desi', 'flag': '🇮🇳'},
     {'code': 'en-AU', 'name': 'Australian', 'flag': '🇦🇺'},
     {'code': 'en-CA', 'name': 'Canadian', 'flag': '🇨🇦'},
-    {'code': 'ur-PK', 'name': 'Urdu Pakistan', 'flag': '🇵🇰'},
   ];
 
   @override
@@ -83,7 +83,11 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
               children: [
                 const Row(
                   children: [
-                    Icon(Icons.tune_rounded, color: AppColors.primaryCyan, size: 22),
+                    Icon(
+                      Icons.tune_rounded,
+                      color: AppColors.primaryCyan,
+                      size: 22,
+                    ),
                     SizedBox(width: 10),
                     Text(
                       'Voice & Accent Settings',
@@ -96,7 +100,10 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ],
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: AppColors.textSecondary,
+                  ),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -115,25 +122,31 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
             ),
             const SizedBox(height: 10),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 10,
+              runSpacing: 10,
               children: _accents.map((accent) {
                 final isSelected = _selectedLocale == accent['code'];
                 return ChoiceChip(
-                  label: Text('${accent['flag']}  ${accent['name']}'),
+                  tooltip: accent['name'],
+                  showCheckmark: false,
+                  label: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Text(
+                      accent['flag']!,
+                      style: const TextStyle(fontSize: 22),
+                    ),
+                  ),
                   selected: isSelected,
-                  selectedColor: AppColors.primaryCyan.withValues(alpha: 0.25),
+                  selectedColor: AppColors.primaryCyan.withValues(alpha: 0.3),
                   backgroundColor: AppColors.surfaceCard,
                   side: BorderSide(
                     color: isSelected
                         ? AppColors.primaryCyan
-                        : AppColors.accentViolet.withValues(alpha: 0.2),
-                    width: isSelected ? 1.5 : 1.0,
+                        : AppColors.accentViolet.withValues(alpha: 0.25),
+                    width: isSelected ? 1.8 : 1.0,
                   ),
-                  labelStyle: TextStyle(
-                    color: isSelected ? AppColors.primaryCyan : AppColors.textPrimary,
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   onSelected: (selected) {
                     if (selected) {
@@ -160,7 +173,9 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ),
                 ),
                 Text(
-                  _pitch < 0.9 ? 'Deep' : (_pitch > 1.1 ? 'High' : 'Natural (1.0x)'),
+                  _pitch < 0.9
+                      ? 'Deep'
+                      : (_pitch > 1.1 ? 'High' : 'Natural (1.0x)'),
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -197,7 +212,9 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ),
                 ),
                 Text(
-                  _speechRate < 0.45 ? 'Slow' : (_speechRate > 0.55 ? 'Fast' : 'Normal (0.5x)'),
+                  _speechRate < 0.45
+                      ? 'Slow'
+                      : (_speechRate > 0.55 ? 'Fast' : 'Normal (0.5x)'),
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -235,11 +252,13 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   elevation: 4,
                 ),
                 icon: Icon(
-                  _isTesting ? Icons.volume_up_rounded : Icons.play_arrow_rounded,
+                  _isTesting
+                      ? Icons.volume_up_rounded
+                      : Icons.play_arrow_rounded,
                   size: 22,
                 ),
                 label: Text(
-                  _isTesting ? 'Playing Sample...' : 'Test Voice (Sun Kar Dekhein)',
+                  _isTesting ? 'Playing Sample...' : 'Test Voice',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
