@@ -5,8 +5,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class GroqService {
   static const String _endpoint = 'https://api.groq.com/openai/v1/chat/completions';
   
-  // llama-3.3-70b-versatile is Groq's active primary model
-  String _currentModel = 'llama-3.3-70b-versatile';
+  // openai/gpt-oss-120b is the primary and exclusive model requested
+  static const String _defaultModel = 'openai/gpt-oss-120b';
+  String _currentModel = _defaultModel;
 
   final List<Map<String, String>> _history = [];
 
@@ -105,11 +106,6 @@ Rules for voice responses:
         return cleanReply;
       } else {
         final errorBody = response.body;
-        // If current model returns 404, fallback to llama3-8b-8192
-        if (response.statusCode == 404 && _currentModel != 'llama3-8b-8192') {
-          _currentModel = 'llama3-8b-8192';
-          return await sendMessage(userMessage);
-        }
         throw Exception('Groq API Error (${response.statusCode}): $errorBody');
       }
     } catch (e) {

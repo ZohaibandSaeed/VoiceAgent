@@ -72,7 +72,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
             const SizedBox(height: 8),
             _buildFeatureBullet(r'100% Free architecture ($0 cost)'),
             _buildFeatureBullet('Native device Speech-To-Text & TTS'),
-            _buildFeatureBullet('Groq Llama-3.1 ultra-fast inference'),
+            _buildFeatureBullet('Groq GPT-OSS-120B ultra-fast inference'),
             _buildFeatureBullet('Urdu, English, Roman Urdu auto-detection'),
             const SizedBox(height: 12),
             Container(
@@ -180,70 +180,96 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.surfaceCard,
-                                            borderRadius: BorderRadius.circular(12),
-                                            border: Border.all(
-                                              color: AppColors.primaryCyan.withValues(alpha: 0.3),
-                                            ),
-                                          ),
-                                          child: const Icon(
-                                            Icons.graphic_eq_rounded,
-                                            color: AppColors.primaryCyan,
-                                            size: 20,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        const Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'ZOID',
-                                              style: TextStyle(
-                                                color: AppColors.textPrimary,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 2.0,
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.surfaceCard,
+                                              borderRadius: BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color: AppColors.primaryCyan.withValues(alpha: 0.3),
                                               ),
                                             ),
-                                            Text(
-                                              'Groq AI • Free & Fast',
-                                              style: TextStyle(
-                                                color: AppColors.textMuted,
-                                                fontSize: 11,
-                                              ),
+                                            child: const Icon(
+                                              Icons.graphic_eq_rounded,
+                                              color: AppColors.primaryCyan,
+                                              size: 20,
                                             ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'ZOID',
+                                                  style: TextStyle(
+                                                    color: AppColors.textPrimary,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 2.0,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                                Text(
+                                                  'Groq GPT-OSS-120B',
+                                                  style: TextStyle(
+                                                    color: AppColors.textMuted,
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                    const SizedBox(width: 8),
                                     Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         IconButton(
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.all(6),
+                                          constraints: const BoxConstraints(),
                                           tooltip: 'Voice & Accent Settings',
                                           icon: const Icon(
                                             Icons.tune_rounded,
                                             color: AppColors.primaryCyan,
+                                            size: 22,
                                           ),
                                           onPressed: _openVoiceSettings,
                                         ),
+                                        const SizedBox(width: 4),
                                         IconButton(
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.all(6),
+                                          constraints: const BoxConstraints(),
                                           tooltip: 'Info',
                                           icon: const Icon(
                                             Icons.info_outline_rounded,
                                             color: AppColors.textSecondary,
+                                            size: 22,
                                           ),
                                           onPressed: _showInfoDialog,
                                         ),
+                                        const SizedBox(width: 4),
                                         IconButton(
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.all(6),
+                                          constraints: const BoxConstraints(),
                                           tooltip: 'Reset Chat',
                                           icon: const Icon(
                                             Icons.refresh_rounded,
                                             color: AppColors.textSecondary,
+                                            size: 22,
                                           ),
                                           onPressed: _controller.clearConversation,
                                         ),
