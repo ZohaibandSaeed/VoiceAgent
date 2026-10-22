@@ -71,9 +71,18 @@ class VoiceAgentController extends ChangeNotifier {
   double get pitch => _ttsService.pitch;
   double get speechRate => _ttsService.speechRate;
   String get currentModel => _groqService.currentModel;
+  String get apiKey => _groqService.apiKey;
+
+  Future<void> saveApiKey(String newKey) async {
+    await _groqService.saveApiKey(newKey);
+    notifyListeners();
+  }
+
+  Future<bool> validateApiKey(String testKey) => _groqService.validateKey(testKey);
 
   Future<void> initialize() async {
     try {
+      await _groqService.loadSavedApiKey();
       // Initialize TTS
       await _ttsService.initialize();
       _ttsService.onStart = () {
@@ -366,3 +375,4 @@ class VoiceAgentController extends ChangeNotifier {
     super.dispose();
   }
 }
+

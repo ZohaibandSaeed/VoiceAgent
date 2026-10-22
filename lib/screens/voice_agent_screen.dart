@@ -7,6 +7,7 @@ import '../widgets/sound_wave_bars.dart';
 import '../widgets/status_pill.dart';
 import '../widgets/transcript_card.dart';
 import '../widgets/voice_settings_sheet.dart';
+import '../widgets/api_key_dialog.dart';
 import 'chat_screen.dart';
 
 class VoiceAgentScreen extends StatefulWidget {
@@ -29,6 +30,10 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _openApiKeyDialog() {
+    ApiKeyDialog.show(context, _controller);
   }
 
   void _openVoiceSettings() {
@@ -57,7 +62,6 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +73,7 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
 
           return Stack(
             children: [
-              // Ambient Decorative Glow Blobs in Background (Warm Light Brown & White luxury lighting)
+              // Ambient Decorative Glow Blobs in Background
               Positioned(
                 top: -80,
                 left: -60,
@@ -197,6 +201,19 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                           visualDensity: VisualDensity.compact,
                                           padding: const EdgeInsets.all(6),
                                           constraints: const BoxConstraints(),
+                                          tooltip: 'Groq API Key',
+                                          icon: const Icon(
+                                            Icons.vpn_key_outlined,
+                                            color: AppColors.lightBrown,
+                                            size: 20,
+                                          ),
+                                          onPressed: _openApiKeyDialog,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        IconButton(
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.all(6),
+                                          constraints: const BoxConstraints(),
                                           tooltip: 'Voice & Accent Settings',
                                           icon: const Icon(
                                             Icons.tune_rounded,
@@ -205,7 +222,6 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                           ),
                                           onPressed: _openVoiceSettings,
                                         ),
-
                                         const SizedBox(width: 4),
                                         IconButton(
                                           visualDensity: VisualDensity.compact,
@@ -224,37 +240,56 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                   ],
                                 ),
 
-                                // Warning Banner if API Key is not set in .env
+                                // Clickable Warning Banner if API Key is not set
                                 if (!_controller.hasApiKey)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 14),
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.warningOrange.withValues(alpha: 0.12),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: AppColors.warningOrange.withValues(alpha: 0.4),
-                                      ),
-                                    ),
-                                    child: const Row(
-                                      children: [
-                                        Icon(
-                                          Icons.warning_amber_rounded,
-                                          color: AppColors.warningOrange,
-                                          size: 20,
+                                  InkWell(
+                                    onTap: _openApiKeyDialog,
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 14),
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.warningOrange.withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: AppColors.warningOrange.withValues(alpha: 0.4),
                                         ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: Text(
-                                            'Add your GROQ_API_KEY in the .env file to enable responses.',
-                                            style: TextStyle(
-                                              color: AppColors.warningOrange,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.warning_amber_rounded,
+                                            color: AppColors.warningOrange,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Expanded(
+                                            child: Text(
+                                              'Tap to enter your GROQ_API_KEY.',
+                                              style: TextStyle(
+                                                color: AppColors.warningOrange,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.warningOrange.withValues(alpha: 0.2),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: const Text(
+                                              'Setup',
+                                              style: TextStyle(
+                                                color: AppColors.warningOrange,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
 
@@ -281,7 +316,6 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                 ),
 
                                 const Spacer(flex: 1),
-
 
                                 // Live Glassmorphic Transcript Card
                                 TranscriptCard(
@@ -310,7 +344,6 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
       ),
     );
   }
-
 
   Widget _buildBottomActionButton(AgentStatus status) {
     final isListening = status == AgentStatus.listening;

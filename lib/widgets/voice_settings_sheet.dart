@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../controllers/voice_agent_controller.dart';
 import '../theme/app_theme.dart';
+import 'api_key_dialog.dart';
 
 class VoiceSettingsSheet extends StatefulWidget {
   final VoiceAgentController controller;
@@ -267,9 +268,77 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                 ),
               ),
             ),
+            const SizedBox(height: 18),
+            // 5. Groq API Key Setup
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceCard,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: AppColors.lightBrown.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryCyan.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.vpn_key_rounded,
+                      color: AppColors.primaryCyan,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Groq API Key',
+                          style: TextStyle(
+                            color: AppColors.pureWhite,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          widget.controller.hasApiKey ? 'Configured ?' : 'Missing ??',
+                          style: TextStyle(
+                            color: widget.controller.hasApiKey
+                                ? AppColors.activeGreen
+                                : AppColors.warningOrange,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      ApiKeyDialog.show(context, widget.controller);
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primaryCyan,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    ),
+                    child: Text(
+                      widget.controller.hasApiKey ? 'Change' : 'Configure',
+                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

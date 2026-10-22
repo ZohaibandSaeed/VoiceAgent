@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GroqService {
   static const String _endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+  static const String _prefApiKey = 'custom_groq_api_key';
   
-  // openai/gpt-oss-120b is the primary and exclusive model requested
-  static const String _defaultModel = 'openai/gpt-oss-120b';
+  // llama-3.3-70b-versatile is the primary and exclusive model requested
+  static const String _defaultModel = 'llama-3.3-70b-versatile';
   String _currentModel = _defaultModel;
 
+  String? _customApiKey;
   final List<Map<String, String>> _history = [];
 
   String get currentModel => _currentModel;
@@ -16,12 +19,55 @@ class GroqService {
     _currentModel = model;
   }
 
-  String get _apiKey {
-    if (!dotenv.isInitialized) return '';
-    return dotenv.env['GROQ_API_KEY']?.trim() ?? '';
+  Future<void> loadSavedApiKey() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _customApiKey = prefs.getString(_prefApiKey);
+    } catch (_) {}
   }
 
-  bool get hasApiKey => _apiKey.isNotEmpty && _apiKey != 'your_groq_api_key_here';
+  Future<void> saveApiKey(String newKey) async {
+    _customApiKey = newKey.trim();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (_customApiKey!.isEmpty) {
+        await prefs.remove(_prefApiKey);
+      } else {
+        await prefs.setString(_prefApiKey, _customApiKey!);
+      }
+    } catch (_) {}
+  }
+
+  Future<bool> validateKey(String testKey) async {
+    final cleanKey = testKey.trim();
+    if (cleanKey.isEmpty) return false;
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.groq.com/openai/v1/models'),
+        headers: {
+          'Authorization': 'Bearer $cleanKey',
+        },
+      ).timeout(const Duration(seconds: 8));
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  String get apiKey {
+    if (_customApiKey != null && _customApiKey!.isNotEmpty) {
+      return _customApiKey!;
+    }
+    if (dotenv.isInitialized) {
+      final envKey = dotenv.env['GROQ_API_KEY']?.trim() ?? '';
+      if (envKey.isNotEmpty && envKey != 'your_groq_api_key_here') {
+        return envKey;
+      }
+    }
+    return '';
+  }
+
+  bool get hasApiKey => apiKey.isNotEmpty;
 
   static const String _systemPrompt = '''
 You are Zoid, a warm, witty, and intelligent AI voice companion.
@@ -68,7 +114,7 @@ Rules for voice responses:
   Future<String> sendMessage(String userMessage) async {
     if (!hasApiKey) {
       throw Exception(
-        'Groq API key missing. Please add your GROQ_API_KEY inside the .env file.',
+        'Groq API key missing. Please configure your GROQ_API_KEY in app settings.',
       );
     }
 
@@ -84,7 +130,7 @@ Rules for voice responses:
         Uri.parse(_endpoint),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_apiKey',
+          'Authorization': 'Bearer $apiKey',
         },
         body: jsonEncode({
           'model': _currentModel,
