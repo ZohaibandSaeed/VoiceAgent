@@ -24,6 +24,7 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
     {'code': 'en-IN', 'name': 'Indian / Desi', 'flag': '🇮🇳'},
     {'code': 'en-AU', 'name': 'Australian', 'flag': '🇦🇺'},
     {'code': 'en-CA', 'name': 'Canadian', 'flag': '🇨🇦'},
+    {'code': 'ur-PK', 'name': 'Urdu Pakistan', 'flag': '🇵🇰'},
   ];
 
   @override

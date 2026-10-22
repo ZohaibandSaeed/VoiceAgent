@@ -124,19 +124,19 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(9),
+                                            borderRadius: BorderRadius.circular(8),
                                             child: Image.asset(
                                               'assets/images/logo.png',
-                                              width: 36,
-                                              height: 36,
+                                              width: 32,
+                                              height: 32,
                                               fit: BoxFit.contain,
                                               errorBuilder: (context, error, stackTrace) {
                                                 return Container(
-                                                  width: 36,
-                                                  height: 36,
+                                                  width: 32,
+                                                  height: 32,
                                                   decoration: BoxDecoration(
                                                     color: AppColors.surfaceCard,
-                                                    borderRadius: BorderRadius.circular(9),
+                                                    borderRadius: BorderRadius.circular(8),
                                                     border: Border.all(
                                                       color: AppColors.lightBrown.withValues(alpha: 0.35),
                                                     ),
@@ -144,22 +144,25 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                                   child: const Icon(
                                                     Icons.graphic_eq_rounded,
                                                     color: AppColors.pureWhite,
-                                                    size: 20,
+                                                    size: 18,
                                                   ),
                                                 );
                                               },
                                             ),
                                           ),
-                                          const SizedBox(width: 10),
-                                          const Text(
-                                            'ZOID',
-                                            style: TextStyle(
-                                              color: AppColors.pureWhite,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w800,
-                                              letterSpacing: 2.5,
+                                          const SizedBox(width: 8),
+                                          const Flexible(
+                                            child: Text(
+                                              'ZOID',
+                                              style: TextStyle(
+                                                color: AppColors.pureWhite,
+                                                fontSize: 19,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 2.0,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),

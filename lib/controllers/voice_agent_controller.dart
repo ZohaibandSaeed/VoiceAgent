@@ -262,8 +262,10 @@ class VoiceAgentController extends ChangeNotifier {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _status = AgentStatus.error;
     } finally {
-      // ALWAYS reset to idle so the user can ask the next question
-      _status = AgentStatus.idle;
+      // If an error occurred, retain AgentStatus.error so the user sees it, otherwise return to idle
+      if (_status != AgentStatus.error) {
+        _status = AgentStatus.idle;
+      }
       _soundLevel = 0.0;
       _isProcessing = false;
       notifyListeners();

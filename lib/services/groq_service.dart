@@ -90,7 +90,7 @@ Rules for voice responses:
           'model': _currentModel,
           'messages': _history,
           'temperature': 0.7,
-          'max_tokens': 250,
+          'reasoning_effort': 'low',
           'stream': false,
         }),
       );
@@ -98,7 +98,11 @@ Rules for voice responses:
       if (response.statusCode == 200) {
         final data = jsonDecode(utf8.decode(response.bodyBytes));
         final reply = data['choices'][0]['message']['content'] as String? ?? '';
-        final cleanReply = reply.trim();
+        var cleanReply = reply.trim();
+
+        if (cleanReply.isEmpty) {
+          cleanReply = 'Mujhe samajh nahi aaya, barah e karam dobara bolejiye.';
+        }
 
         _history.add({
           'role': 'assistant',
