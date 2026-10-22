@@ -251,13 +251,14 @@ class VoiceAgentController extends ChangeNotifier {
 
     try {
       final reply = await _groqService.sendMessage(textToProcess);
-      _currentResponse = reply;
-      _messages.add(ChatMessage(text: reply, isUser: false));
+      final cleanReply = sanitizeReply(reply);
+      _currentResponse = cleanReply;
+      _messages.add(ChatMessage(text: cleanReply, isUser: false));
 
       _status = AgentStatus.speaking;
       notifyListeners();
 
-      await _ttsService.speak(reply);
+      await _ttsService.speak(cleanReply);
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _status = AgentStatus.error;
@@ -270,6 +271,70 @@ class VoiceAgentController extends ChangeNotifier {
       _isProcessing = false;
       notifyListeners();
     }
+  }
+
+  /// Sanitize reply to strip awkward quotation marks or JSON escaping
+  static String sanitizeReply(String text) {
+    var cleaned = text.trim();
+    if ((cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+        (cleaned.startsWith('“') && cleaned.endsWith('”')) ||
+        (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+      if (cleaned.length >= 2) {
+        cleaned = cleaned.substring(1, cleaned.length - 1).trim();
+      }
+    }
+    return cleaned.replaceAll(r'\"', '"');
+  }
+
+  /// Send text message from the Chat Screen
+  Future<void> sendTextMessage(String text, {bool autoSpeak = false}) async {
+    final cleanText = text.trim();
+    if (cleanText.isEmpty || _isProcessing) return;
+
+    if (_ttsService.isSpeaking) {
+      await _ttsService.stop();
+    }
+
+    _isProcessing = true;
+    _errorMessage = null;
+    _status = AgentStatus.thinking;
+    _messages.add(ChatMessage(text: cleanText, isUser: true));
+    notifyListeners();
+
+    try {
+      final reply = await _groqService.sendMessage(cleanText);
+      final cleanReply = sanitizeReply(reply);
+      _currentResponse = cleanReply;
+      _messages.add(ChatMessage(text: cleanReply, isUser: false));
+
+      if (autoSpeak) {
+        _status = AgentStatus.speaking;
+        notifyListeners();
+        await _ttsService.speak(cleanReply);
+      }
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _status = AgentStatus.error;
+    } finally {
+      if (_status != AgentStatus.error && _status != AgentStatus.speaking) {
+        _status = AgentStatus.idle;
+      }
+      _isProcessing = false;
+      notifyListeners();
+    }
+  }
+
+  /// Speak arbitrary text (e.g. from chat screen speaker icon)
+  Future<void> speakText(String text) async {
+    final clean = text.trim();
+    if (clean.isEmpty) return;
+    if (_ttsService.isSpeaking) {
+      await _ttsService.stop();
+      return;
+    }
+    _status = AgentStatus.speaking;
+    notifyListeners();
+    await _ttsService.speak(clean);
   }
 
   /// Stop AI voice immediately

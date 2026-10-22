@@ -7,6 +7,7 @@ import '../widgets/sound_wave_bars.dart';
 import '../widgets/status_pill.dart';
 import '../widgets/transcript_card.dart';
 import '../widgets/voice_settings_sheet.dart';
+import 'chat_screen.dart';
 
 class VoiceAgentScreen extends StatefulWidget {
   const VoiceAgentScreen({super.key});
@@ -36,6 +37,14 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => VoiceSettingsSheet(controller: _controller),
+    );
+  }
+
+  void _openChatScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(controller: _controller),
+      ),
     );
   }
 
@@ -171,6 +180,19 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        IconButton(
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.all(6),
+                                          constraints: const BoxConstraints(),
+                                          tooltip: 'Chat with Zoid',
+                                          icon: const Icon(
+                                            Icons.chat_bubble_outline_rounded,
+                                            color: AppColors.lightBrown,
+                                            size: 21,
+                                          ),
+                                          onPressed: _openChatScreen,
+                                        ),
+                                        const SizedBox(width: 4),
                                         IconButton(
                                           visualDensity: VisualDensity.compact,
                                           padding: const EdgeInsets.all(6),
