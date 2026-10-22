@@ -60,8 +60,8 @@ class SttService {
         cancelOnError: false,
         listenMode: ListenMode.dictation,
         localeId: localeId ?? (_currentLocaleId.isNotEmpty ? _currentLocaleId : null),
-        listenFor: const Duration(seconds: 40),
-        pauseFor: const Duration(seconds: 3),
+        listenFor: const Duration(seconds: 60),
+        pauseFor: const Duration(seconds: 6),
       ),
     );
   }

@@ -36,8 +36,25 @@ class VoiceAgentController extends ChangeNotifier {
   double _soundLevel = 0.0;
   bool _isInitialized = false;
   bool _isProcessing = false;
+  Timer? _silenceTimer;
 
   final List<ChatMessage> _messages = [];
+
+  void _resetSilenceTimer() {
+    _silenceTimer?.cancel();
+    _silenceTimer = Timer(const Duration(seconds: 3), () {
+      if (_status == AgentStatus.listening && !_isProcessing) {
+        if (_currentTranscript.trim().isNotEmpty) {
+          _processRecordedSpeech();
+        }
+      }
+    });
+  }
+
+  void _cancelSilenceTimer() {
+    _silenceTimer?.cancel();
+    _silenceTimer = null;
+  }
 
   // Getters
   AgentStatus get status => _status;
@@ -140,6 +157,7 @@ class VoiceAgentController extends ChangeNotifier {
     }
 
     if (_status == AgentStatus.listening) {
+      _cancelSilenceTimer();
       await _sttService.stopListening();
       await _processRecordedSpeech();
       return;
@@ -167,6 +185,7 @@ class VoiceAgentController extends ChangeNotifier {
     _errorMessage = null;
     _currentTranscript = '';
     _soundLevel = 0.0;
+    _cancelSilenceTimer();
 
     // Cleanly stop any ongoing audio/TTS
     if (_ttsService.isSpeaking) {
@@ -184,11 +203,12 @@ class VoiceAgentController extends ChangeNotifier {
         onResult: (words, isFinal) {
           if (_status != AgentStatus.listening || _isProcessing) return;
 
-          _currentTranscript = words;
-          notifyListeners();
+          if (words.trim().isNotEmpty) {
+            _currentTranscript = words;
+            notifyListeners();
 
-          if (isFinal && words.trim().isNotEmpty) {
-            _processRecordedSpeech();
+            // Every new word/phrase resets the 3-second silence timer
+            _resetSilenceTimer();
           }
         },
         onSoundLevelChange: (level) {
@@ -211,6 +231,7 @@ class VoiceAgentController extends ChangeNotifier {
   Future<void> _processRecordedSpeech() async {
     if (_isProcessing) return;
 
+    _cancelSilenceTimer();
     final textToProcess = _currentTranscript.trim();
     if (textToProcess.isEmpty) {
       _status = AgentStatus.idle;
@@ -260,6 +281,7 @@ class VoiceAgentController extends ChangeNotifier {
 
   /// Reset conversation
   void clearConversation() {
+    _cancelSilenceTimer();
     _groqService.clearConversation();
     _messages.clear();
     _currentTranscript = '';
@@ -269,5 +291,11 @@ class VoiceAgentController extends ChangeNotifier {
     _soundLevel = 0.0;
     _isProcessing = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _cancelSilenceTimer();
+    super.dispose();
   }
 }
