@@ -13,31 +13,85 @@ class VoiceSettingsSheet extends StatefulWidget {
 }
 
 class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
-  late String _selectedLocale;
+  late String _selectedVoiceId;
   late double _pitch;
   late double _speechRate;
   bool _isTesting = false;
 
+  // The 8 Azure Neural accents / voices requested
   final List<Map<String, String>> _accents = [
-    {'code': 'en-US', 'name': 'US American', 'flag': '🇺🇸'},
-    {'code': 'en-GB', 'name': 'British English', 'flag': '🇬🇧'},
-    {'code': 'en-IN', 'name': 'Indian / Desi', 'flag': '🇮🇳'},
-    {'code': 'en-AU', 'name': 'Australian', 'flag': '🇦🇺'},
-    {'code': 'en-CA', 'name': 'Canadian', 'flag': '🇨🇦'},
-    {'code': 'ur-PK', 'name': 'Urdu Pakistan', 'flag': '🇵🇰'},
+    {
+      'id': 'ur-PK-UzmaNeural',
+      'name': 'Uzma',
+      'flag': '🇵🇰',
+      'country': 'Pakistan (Female)',
+      'sample': 'ہیلو! میں زوئڈ ہوں، آپ کا آواز والا اے آئی ساتھی۔',
+    },
+    {
+      'id': 'ur-PK-AsadNeural',
+      'name': 'Asad',
+      'flag': '🇵🇰',
+      'country': 'Pakistan (Male)',
+      'sample': 'السلام علیکم! میں زوئڈ ہوں، میں آپ کی کیا مدد کر سکتا ہوں؟',
+    },
+    {
+      'id': 'en-US-JennyNeural',
+      'name': 'Jenny',
+      'flag': '🇺🇸',
+      'country': 'US American',
+      'sample': 'Hello! I am Zoid, your personal AI voice companion.',
+    },
+    {
+      'id': 'en-GB-SoniaNeural',
+      'name': 'Sonia',
+      'flag': '🇬🇧',
+      'country': 'British English',
+      'sample': 'Good day! How may I be of assistance to you today?',
+    },
+    {
+      'id': 'en-AU-NatashaNeural',
+      'name': 'Natasha',
+      'flag': '🇦🇺',
+      'country': 'Australian',
+      'sample': "G'day! Zoid here, ready whenever you need me.",
+    },
+    {
+      'id': 'en-CA-ClaraNeural',
+      'name': 'Clara',
+      'flag': '🇨🇦',
+      'country': 'Canadian',
+      'sample': "Hello there! I'm Zoid, glad to assist you today.",
+    },
+    {
+      'id': 'en-IN-NeerjaNeural',
+      'name': 'Neerja',
+      'flag': '🇮🇳',
+      'country': 'Indian / Desi',
+      'sample': 'Namaste! How can I help you today?',
+    },
+    {
+      'id': 'en-IE-EmilyNeural',
+      'name': 'Emily',
+      'flag': '🇮🇪',
+      'country': 'Irish English',
+      'sample': "Hello! Lovely to meet you, what's on your mind?",
+    },
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectedLocale = widget.controller.userLocale;
-    _pitch = widget.controller.pitch;
-    _speechRate = widget.controller.speechRate;
+    _selectedVoiceId = widget.controller.selectedVoiceId;
+    if (!_accents.any((a) => a['id'] == _selectedVoiceId)) {
+      _selectedVoiceId = _accents.first['id']!;
+    }
+    _pitch = widget.controller.pitch.clamp(0.8, 1.2);
+    _speechRate = widget.controller.speechRate.clamp(0.75, 1.25);
   }
 
   void _applyChanges() {
     widget.controller.updateVoiceSettings(
-      locale: _selectedLocale,
+      voiceId: _selectedVoiceId,
       pitch: _pitch,
       speechRate: _speechRate,
     );
@@ -46,7 +100,16 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
   Future<void> _testVoice() async {
     setState(() => _isTesting = true);
     _applyChanges();
-    await widget.controller.testVoiceSettings();
+
+    final currentVoice = _accents.firstWhere(
+      (a) => a['id'] == _selectedVoiceId,
+      orElse: () => _accents.first,
+    );
+
+    try {
+      await widget.controller.testVoiceSettings(currentVoice['sample']);
+    } catch (_) {}
+
     if (mounted) {
       setState(() => _isTesting = false);
     }
@@ -54,6 +117,11 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final currentVoice = _accents.firstWhere(
+      (a) => a['id'] == _selectedVoiceId,
+      orElse: () => _accents.first,
+    );
+
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -111,24 +179,39 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
             ),
             const SizedBox(height: 16),
 
-            // 1. Accent Selection
-            const Text(
-              'SELECT ACCENT / REGION',
-              style: TextStyle(
-                color: AppColors.primaryCyan,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
+            // 1. Accent Selection Header + Active Voice Label
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'SELECT ACCENT / REGION',
+                  style: TextStyle(
+                    color: AppColors.primaryCyan,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                Text(
+                  '${currentVoice['flag']} ${currentVoice['name']} • ${currentVoice['country']}',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
+
+            // Close-together Flag Chips (Original Classic Style)
             Wrap(
               spacing: 10,
               runSpacing: 10,
               children: _accents.map((accent) {
-                final isSelected = _selectedLocale == accent['code'];
+                final isSelected = _selectedVoiceId == accent['id'];
                 return ChoiceChip(
-                  tooltip: accent['name'],
+                  tooltip: '${accent['name']} (${accent['country']})',
                   showCheckmark: false,
                   label: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -151,7 +234,7 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ),
                   onSelected: (selected) {
                     if (selected) {
-                      setState(() => _selectedLocale = accent['code']!);
+                      setState(() => _selectedVoiceId = accent['id']!);
                       _applyChanges();
                     }
                   },
@@ -174,9 +257,9 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ),
                 ),
                 Text(
-                  _pitch < 0.9
+                  _pitch < 0.95
                       ? 'Deep'
-                      : (_pitch > 1.1 ? 'High' : 'Natural (1.0x)'),
+                      : (_pitch > 1.05 ? 'High' : 'Natural (1.0x)'),
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -187,8 +270,8 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
             ),
             Slider(
               value: _pitch,
-              min: 0.6,
-              max: 1.4,
+              min: 0.8,
+              max: 1.2,
               divisions: 8,
               activeColor: AppColors.primaryCyan,
               inactiveColor: AppColors.surfaceCard,
@@ -213,9 +296,9 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
                   ),
                 ),
                 Text(
-                  _speechRate < 0.45
+                  _speechRate < 0.92
                       ? 'Slow'
-                      : (_speechRate > 0.55 ? 'Fast' : 'Normal (0.5x)'),
+                      : (_speechRate > 1.08 ? 'Fast' : 'Normal (1.0x)'),
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -226,8 +309,8 @@ class _VoiceSettingsSheetState extends State<VoiceSettingsSheet> {
             ),
             Slider(
               value: _speechRate,
-              min: 0.35,
-              max: 0.75,
+              min: 0.75,
+              max: 1.25,
               divisions: 8,
               activeColor: AppColors.accentViolet,
               inactiveColor: AppColors.surfaceCard,

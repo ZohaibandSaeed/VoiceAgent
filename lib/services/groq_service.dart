@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GroqService {
-  static const String _endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-  
+  static const String _endpoint =
+      'https://api.groq.com/openai/v1/chat/completions';
+
   // openai/gpt-oss-120b is the primary and exclusive model requested
   static const String _defaultModel = 'openai/gpt-oss-120b';
   String _currentModel = _defaultModel;
@@ -16,12 +18,24 @@ class GroqService {
     _currentModel = model;
   }
 
+  // Optional compile-time fallback key passed via --dart-define=GROQ_API_KEY=...
+  static const String _fallbackApiKey = String.fromEnvironment(
+    'GROQ_API_KEY',
+    defaultValue: '',
+  );
+
   String get _apiKey {
-    if (!dotenv.isInitialized) return '';
-    return dotenv.env['GROQ_API_KEY']?.trim() ?? '';
+    final fromDotenv = dotenv.isInitialized
+        ? (dotenv.env['GROQ_API_KEY']?.trim() ?? '')
+        : '';
+    if (fromDotenv.isNotEmpty && fromDotenv != 'your_groq_api_key_here') {
+      return fromDotenv;
+    }
+    return _fallbackApiKey.trim();
   }
 
-  bool get hasApiKey => _apiKey.isNotEmpty && _apiKey != 'your_groq_api_key_here';
+  bool get hasApiKey =>
+      _apiKey.isNotEmpty && _apiKey != 'your_groq_api_key_here';
 
   static const String _systemPrompt = '''
 You are Zoid, a warm, witty, and intelligent AI voice companion.
@@ -44,10 +58,7 @@ Rules for voice responses:
 
   void _resetHistory() {
     _history.clear();
-    _history.add({
-      'role': 'system',
-      'content': _systemPrompt,
-    });
+    _history.add({'role': 'system', 'content': _systemPrompt});
   }
 
   void clearConversation() {
@@ -72,10 +83,7 @@ Rules for voice responses:
       );
     }
 
-    _history.add({
-      'role': 'user',
-      'content': userMessage,
-    });
+    _history.add({'role': 'user', 'content': userMessage});
 
     _trimHistoryIfNeeded();
 
@@ -104,10 +112,7 @@ Rules for voice responses:
           cleanReply = 'Mujhe samajh nahi aaya, barah e karam dobara bolejiye.';
         }
 
-        _history.add({
-          'role': 'assistant',
-          'content': cleanReply,
-        });
+        _history.add({'role': 'assistant', 'content': cleanReply});
 
         return cleanReply;
       } else {

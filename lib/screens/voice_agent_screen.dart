@@ -115,6 +115,8 @@ class _VoiceAgentScreenState extends State<VoiceAgentScreen> {
                       physics: const BouncingScrollPhysics(),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
+                          maxWidth: constraints.maxWidth,
                           minHeight: constraints.maxHeight,
                         ),
                         child: IntrinsicHeight(

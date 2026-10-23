@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../services/azure_tts_service.dart';
 import '../services/groq_service.dart';
 import '../services/stt_service.dart';
-import '../services/tts_service.dart';
 
 enum AgentStatus {
   idle,
@@ -27,7 +27,7 @@ class ChatMessage {
 class VoiceAgentController extends ChangeNotifier {
   final GroqService _groqService = GroqService();
   final SttService _sttService = SttService();
-  final TtsService _ttsService = TtsService();
+  final AzureTtsService _ttsService = AzureTtsService();
 
   AgentStatus _status = AgentStatus.idle;
   String _currentTranscript = '';
@@ -68,6 +68,10 @@ class VoiceAgentController extends ChangeNotifier {
 
   // Voice Settings Getters
   String get userLocale => _ttsService.userLocale;
+  String get voiceGender => _ttsService.voiceGender;
+  String get selectedVoiceId => _ttsService.selectedVoiceId;
+  String get selectedVoiceName => _ttsService.selectedVoiceName;
+  bool get hasAzureKey => _ttsService.hasAzureKey;
   double get pitch => _ttsService.pitch;
   double get speechRate => _ttsService.speechRate;
   String get currentModel => _groqService.currentModel;
@@ -124,13 +128,17 @@ class VoiceAgentController extends ChangeNotifier {
 
   /// Update Voice settings live from frontend
   Future<void> updateVoiceSettings({
+    String? voiceId,
     String? locale,
+    String? gender,
     double? pitch,
     double? speechRate,
     String? model,
   }) async {
     await _ttsService.updateSettings(
+      voiceId: voiceId,
       locale: locale,
+      gender: gender,
       pitch: pitch,
       speechRate: speechRate,
     );
@@ -141,9 +149,10 @@ class VoiceAgentController extends ChangeNotifier {
   }
 
   /// Test sample voice with currently selected settings
-  Future<void> testVoiceSettings() async {
-    String sample = "Hello! I am Zoid, your AI voice assistant. How can I help you today?";
-    if (_ttsService.userLocale.startsWith('ur')) {
+  Future<void> testVoiceSettings([String? customSample]) async {
+    String sample = customSample ??
+        "Hello! I am Zoid, your AI voice assistant. How can I help you today?";
+    if (_ttsService.selectedVoiceName.startsWith('ur-PK') && customSample == null) {
       sample = "ہیلو! میں زوئڈ ہوں، آپ کا آواز والا اے آئی ساتھی۔";
     }
     await _ttsService.testVoice(sample);
@@ -363,6 +372,7 @@ class VoiceAgentController extends ChangeNotifier {
   @override
   void dispose() {
     _cancelSilenceTimer();
+    _ttsService.dispose();
     super.dispose();
   }
 }
